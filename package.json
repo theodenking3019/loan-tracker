@@ -16,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/theodenking3019/loan-tracker/issues"
   },
-  "homepage": "https://github.com/theodenking3019/loan-tracker#readme"
+  "homepage": "https://github.com/theodenking3019/loan-tracker#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "mongodb": "^6.0.0"
+  }
 }
