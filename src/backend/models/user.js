@@ -4,10 +4,16 @@ const { MongoClient } = require('mongodb');
 
 let db;
 
-MongoClient.connect('mongodb://localhost:27017', { useUnifiedTopology: true }, (err, client) => {
-    if (err) throw err;
-    db = client.db('loan_tracker_proj');
-});
+const connectDB = async () => {
+    try {
+      const client = await MongoClient.connect('mongodb://localhost:27017');
+      db = client.db('loan-tracker');
+      console.log("Connected to MongoDB");
+    } catch (err) {
+      console.error("Error connecting to MongoDB", err);
+      process.exit(1); // Exit the process with an error
+    }
+  };
 
 const User = {
     async create(data) {
@@ -20,4 +26,4 @@ const User = {
     }
 };
 
-module.exports = User;
+module.exports = { User, connectDB };
