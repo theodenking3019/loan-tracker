@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const path = require('path');
 const { User, connectDB } = require('./models/user');
-const { createEthereumAddress } = require('./ethereum/wallet');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -18,8 +17,7 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-    const { email, password } = req.body;
-    const { address, privateKey } = createEthereumAddress();
+    const { email, password, address, privateKey } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findByEmail(email);
