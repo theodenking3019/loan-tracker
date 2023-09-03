@@ -24,12 +24,24 @@ const User = {
         const { address, privateKey } = createEthereumAddress();
         data.ethereumAddress = address;
         data.ethereumPrivateKey = privateKey;
+        data.totalLoanAmount = 0;
+        data.outstandingBalance = 0;
 
         return await db.collection('users').insertOne(data);
     },
     
     async findByEmail(email) {
         return await db.collection('users').findOne({ email });
+    },
+
+    async updateAmounts(data) {
+      const filter = { email: data.email}
+      const update = { $set: {totalLoanAmount: data.amount, outstandingBalance: data.amount} };
+
+      return await db.collection('users').updateOne(filter, update, (err, result) => {
+        if (err) throw err;
+        console.log("Document updated:", result.modifiedCount);
+      });
     }
 };
 
