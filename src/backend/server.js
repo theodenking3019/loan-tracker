@@ -43,10 +43,14 @@ app.get('/account-data', (req, res) => {
     
     console.log(req.session.userEmail);
     console.log(req.session.userEthereumAddress);
+    console.log(req.session.totalLoanAmount);
+    console.log(req.session.outstandingBalance);
 
     res.json({
       userEmail: req.session.userEmail,
-      userEthereumAddress: req.session.userEthereumAddress 
+      userEthereumAddress: req.session.userEthereumAddress,
+      totalLoanAmount: req.session.totalLoanAmount,
+      outstandingBalance: req.session.outstandingBalance,
     });
   });
 
@@ -77,6 +81,8 @@ app.post('/login', async (req, res) => {
         // If user exists and password matches, create a session for the user
         req.session.userEmail = existingUser.email;
         req.session.userEthereumAddress = existingUser.ethereumAddress;
+        req.session.totalLoanAmount = existingUser.totalLoanAmount;
+        req.session.outstandingBalance = existingUser.outstandingBalance;
         res.json({ success: true });
       } else {
         res.json({ error: true });
@@ -101,7 +107,41 @@ app.post('/borrow', async (req, res) => {
     }
 
     console.log("saving loan terms")
-    await User.updateAmounts({ email: req.session.userEmail, amount: amount});
+
+    await User.updateAmounts({ email: req.session.userEmail, principal: amount, balance: amount});
+
+    req.session.totalLoanAmount = amount;
+    req.session.outstandingBalance = amount;
+
+    console.log('saved')
+
+    res.json({ success: true });
+});
+
+app.post('/repay', async (req, res) => {
+    const { amount } = req.body;
+    console.log('Received repayment request for ' + amount);
+
+    // Fetch the user
+    const user = await User.findByEmail(req.session.userEmail);
+    console.log("Found user "+ user.userEmail)
+
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+    
+    console.log("User's principal is " + user.totalLoanAmount)
+    console.log("saving repayment")
+
+    if (amount >= user.outstandingBalance) {
+        await User.updateAmounts({ email: req.session.userEmail, principal: 0, balance: 0});
+        req.session.totalLoanAmount = 0;
+        req.session.outstandingBalance = 0;
+    } else {
+        await User.updateAmounts({ email: req.session.userEmail, principal: user.totalLoanAmount, balance: user.outstandingBalance - amount});
+        req.session.outstandingBalance = req.session.outstandingBalance - amount;
+    }
+
     console.log('saved')
 
     res.json({ success: true });

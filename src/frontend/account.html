@@ -20,7 +20,7 @@
             right: 10px;
         }
 
-        #borrowForm {
+        #repaymentFormContainer, #borrowFormContainer {
             text-align: center;
             margin-top: 100px;
             font-size: large;
@@ -42,27 +42,59 @@
     </div>
 
     <!-- Loan Amount Input -->
-    <form id="borrowForm" action="/borrow" method="post">
-        <div>
-            <label for="amount">Enter your desired loan amount in USD: </label>
-            <input type="number" id="amount" name="amount" min="1" max="10000" required>
-        </div>
-        <div>
-            <button type="submit">Request Loan</button>
-        </div>
+    <div id="borrowFormContainer">
+        <h2>Request a Loan</h2>
+        <form id="borrowForm" action="/borrow" method="post">
+            <div>
+                <label for="amount">Enter your desired loan amount in USD: </label>
+                <input type="number" id="amount" name="amount" min="1" max="10000" required>
+            </div>
+            <div>
+                <button type="submit">Request Loan</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Repayment Form - initially hidden -->
+    <div id="repaymentFormContainer" style="display: none;">
+        <h2>Repayment</h2>
+        <p>Your principal amount: $<span id="totalLoanAmount"></span></p>
+        <p>Your outstanding balance: $<span id="outstandingBalance"></span></p>
+        <form id="repaymentForm" action="/repay" method="post">
+            <div>
+                <label for="repaymentAmount">Enter repayment amount in USD: </label>
+                <input type="number" id="repaymentAmount" name="repaymentAmount" min="1" required>
+            </div>
+            <div>
+                <button type="submit">Submit Payment</button>
+            </div>
+        </form>
     </div>
 
     <script>
-        // Load username and wallet address
+        // Load username, wallet address, and loan information
         window.onload = async function() {
             try {
                 const response = await fetch('/account-data');
                 if (!response.ok) throw new Error('Failed to fetch user data');
                 
                 const data = await response.json();
+                const principal = data.totalLoanAmount;
+                const outstanding = data.outstandingBalance;
     
                 document.getElementById('userEmail').textContent = data.userEmail;
                 document.getElementById('userEthAddress').textContent = data.userEthereumAddress;
+
+                if (outstanding && outstanding > 0) {
+                    document.getElementById('borrowFormContainer').style.display = 'none';   // Hide the borrow form
+                    document.getElementById('repaymentFormContainer').style.display = 'block';  // Show the repayment form
+                    document.getElementById('outstandingBalance').textContent = principal; // Display the outstanding balance
+                    document.getElementById('totalLoanAmount').textContent = outstanding; // Display the outstanding balance
+                }
+                else {
+                    document.getElementById('borrowFormContainer').style.display = 'block';   // Hide the borrow form
+                    document.getElementById('repaymentFormContainer').style.display = 'none';  // Show the repayment form
+                }
             } catch (error) {
                 console.error(error);
                 // Potentially redirect to login page or show error
@@ -88,17 +120,47 @@
                 })
             })
 
-        const responseData = await response.json();
+            const responseData = await response.json();
 
-        // Handle response here (show success message, redirect, etc.)
-        if (responseData.success) {
-        // Redirect to the home page
-            console.log('Successfully saved loan amount');
-        } else if (responseData.error) {
-            // Handle error, like showing an error message to the user
-            console.log('Error in saving loan amount');
-        }  
-    });
+            // Handle response here (show success message, redirect, etc.)
+            if (responseData.success) {
+            // Redirect to the home page
+                window.location.reload();
+            } else if (responseData.error) {
+                // Handle error, like showing an error message to the user
+                console.log("Error!")
+            }  
+        });
+
+        // Handle submission of repayment data
+        const repaymentForm = document.getElementById('repaymentForm');
+
+        repaymentForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const amount = repaymentForm.repaymentAmount.value;
+
+            const response = await fetch(repaymentForm.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    amount
+                })
+            })
+
+            const responseData = await response.json();
+
+            // Handle response here (show success message, redirect, etc.)
+            if (responseData.success) {
+            // Redirect to the home page
+                window.location.reload();
+            } else if (responseData.error) {
+                // Handle error, like showing an error message to the user
+                console.log("Error!")
+            }  
+        });
 
     </script>
 

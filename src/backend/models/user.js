@@ -36,7 +36,7 @@ const User = {
 
     async updateAmounts(data) {
       const filter = { email: data.email}
-      const update = { $set: {totalLoanAmount: data.amount, outstandingBalance: data.amount} };
+      const update = { $set: {totalLoanAmount: data.principal, outstandingBalance: data.balance} };
 
       return await db.collection('users').updateOne(filter, update, (err, result) => {
         if (err) throw err;
