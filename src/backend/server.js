@@ -5,6 +5,8 @@ const { User, connectDB } = require('./models/user');
 const app = express();
 const session = require('express-session');
 const PORT = process.env.PORT || 3000;
+const { mintNFTLoan, repayNFTLoan } = require('./ethereum/web3');
+
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
@@ -106,8 +108,13 @@ app.post('/borrow', async (req, res) => {
         return res.status(404).json({ error: 'User not found' });
     }
 
-    console.log("saving loan terms")
+    // Note: add error handling here to revert in case one operation fails. 
+    // Requires updating the smart contract as well to include burn functionality for the NFT.
+    console.log("minting NFT")
+    const txReceipt = await mintNFTLoan(user.ethereumAddress, amount);
+    console.log(`Transaction hash: ${txReceipt.transactionHash}`);
 
+    console.log("saving loan terms to Mongo")
     await User.updateAmounts({ email: req.session.userEmail, principal: amount, balance: amount});
 
     req.session.totalLoanAmount = amount;
@@ -131,15 +138,22 @@ app.post('/repay', async (req, res) => {
     }
     
     console.log("User's principal is " + user.totalLoanAmount)
-    console.log("saving repayment")
 
-    if (amount >= user.outstandingBalance) {
+    console.log("Updating NFT")
+    const repayTxReceipt = await repayNFTLoan(user.ethereumAddress, amount);
+    console.log(`Transaction hash: ${repayTxReceipt.transactionHash}`);
+    
+    console.log("saving repayment")
+    if (parseFloat(amount) >= parseFloat(req.session.outstandingBalance)) {
         await User.updateAmounts({ email: req.session.userEmail, principal: 0, balance: 0});
         req.session.totalLoanAmount = 0;
         req.session.outstandingBalance = 0;
     } else {
+        console.log("repayment amount is less than outstanding balance. Updating Loan terms.")
+        console.log("Payment amount: " + amount);
+        console.log("Outstanding balance: " + req.session.outstandingBalance);
         await User.updateAmounts({ email: req.session.userEmail, principal: user.totalLoanAmount, balance: user.outstandingBalance - amount});
-        req.session.outstandingBalance = req.session.outstandingBalance - amount;
+        req.session.outstandingBalance = parseFloat(req.session.outstandingBalance) - parseFloat(amount);
     }
 
     console.log('saved')
