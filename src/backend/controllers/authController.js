@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const path = require('path');
 const { User } = require('../models/user');
+const { getLoanDetailsByBorrower } = require('../utils/ethereum');
+
 
 exports.getRoot = async (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/index.html'));
@@ -31,11 +33,13 @@ exports.getAccountData = async (req, res) => {
       return res.status(401).json({ error: 'Not authorized' });
     }
 
+    const loanDetails = await getLoanDetailsByBorrower(req.session.userEthereumAddress);
+
     res.json({
       userEmail: req.session.userEmail,
       userEthereumAddress: req.session.userEthereumAddress,
-      totalLoanAmount: req.session.totalLoanAmount,
-      outstandingBalance: req.session.outstandingBalance,
+      totalLoanAmount: loanDetails.amount.toString(),
+      outstandingBalance: loanDetails.outstandingBalance.toString(),
     });
 };
 
@@ -44,13 +48,14 @@ exports.postLogin = async (req, res) => {
 
     // Check if user exists
     const existingUser = await User.findByEmail(email);
+    const loanDetails = await getLoanDetailsByBorrower(existingUser.ethereumAddress);
 
     if (existingUser && bcrypt.compareSync(password, existingUser.password)) {
         // If user exists and password matches, create a session for the user
         req.session.userEmail = existingUser.email;
         req.session.userEthereumAddress = existingUser.ethereumAddress;
-        req.session.totalLoanAmount = existingUser.totalLoanAmount;
-        req.session.outstandingBalance = existingUser.outstandingBalance;
+        req.session.totalLoanAmount = loanDetails.amount.toString();
+        req.session.outstandingBalance = loanDetails.outstandingBalance.toString();
         res.json({ success: true });
       } else {
         res.json({ error: true });

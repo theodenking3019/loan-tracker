@@ -22,6 +22,34 @@ const createEthereumAddress = () => {
     };
 };
 
+// Function to find a borrower's current loan
+const fetchCurrentLoanId = async (borrowerAddress) => {
+    try {
+        console.log("Fetching current loan ID for " + borrowerAddress)
+        let loanId = await loanNFTContract.methods.outstandingBorrowerLoans(borrowerAddress).call();
+        console.log(loanId + " found.");
+        return loanId;
+    } catch (error) {
+        console.error('Error fetching value:', error);
+    }
+};
+
+// Function to get the loan details
+const getLoanDetails = async (loanId) => {
+    try {
+        let details = await loanNFTContract.methods.getLoanDetails(loanId).call();
+        return details;
+    } catch (error) {
+        console.error('Error fetching value:', error);
+    }
+};
+
+const getLoanDetailsByBorrower = async (borrowerAddress) => {
+    const loanId = await fetchCurrentLoanId(borrowerAddress);
+    const details = await getLoanDetails(loanId);
+    return details;
+}
+
 // Function to mint a loan
 const mintNFTLoan = async (borrowerAddress, amount) => {
     const mintLoanEstimatedGas = await loanNFTContract.methods.mintLoan(borrowerAddress, amount).estimateGas({
@@ -58,6 +86,7 @@ const repayNFTLoan = async (borrowerAddress, amount) => {
 
 module.exports = {
     createEthereumAddress, 
+    getLoanDetailsByBorrower,
     mintNFTLoan,
     repayNFTLoan  
 };

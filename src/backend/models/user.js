@@ -22,17 +22,6 @@ const User = {
     async findByEmail(email) {
         const db = getDB();
         return await db.collection('users').findOne({ email });
-    },
-
-    async updateAmounts(data) {
-      const db = getDB();
-      const filter = { email: data.email}
-      const update = { $set: {totalLoanAmount: data.principal, outstandingBalance: data.balance} };
-
-      return await db.collection('users').updateOne(filter, update, (err, result) => {
-        if (err) throw err;
-        console.log("Document updated:", result.modifiedCount);
-      });
     }
 };
 

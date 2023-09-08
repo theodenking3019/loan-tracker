@@ -1,5 +1,5 @@
 const { User } = require('../models/user');
-const { mintNFTLoan, repayNFTLoan } = require('../utils/ethereum');
+const { getLoanDetailsByBorrower, mintNFTLoan, repayNFTLoan } = require('../utils/ethereum');
 
 
 exports.postBorrow = async (req, res) => {
@@ -11,15 +11,13 @@ exports.postBorrow = async (req, res) => {
         return res.status(404).json({ error: 'User not found' });
     }
 
-    // Note: add error handling here to revert in case one operation fails. 
-    // Requires updating the smart contract as well to include burn functionality for the NFT.
     const txReceipt = await mintNFTLoan(user.ethereumAddress, amount);
     console.log(`Transaction hash: ${txReceipt.transactionHash}`);
 
-    await User.updateAmounts({ email: req.session.userEmail, principal: amount, balance: amount});
+    const loanDetails = await getLoanDetailsByBorrower(user.ethereumAddress)
 
-    req.session.totalLoanAmount = amount;
-    req.session.outstandingBalance = amount;
+    req.session.totalLoanAmount = loanDetails.amount.toString();
+    req.session.outstandingBalance = loanDetails.outstandingBalance.toString();
 
     res.json({ success: true });
 };
@@ -38,11 +36,9 @@ exports.postRepay = async (req, res) => {
     console.log(`Transaction hash: ${repayTxReceipt.transactionHash}`);
     
     if (parseFloat(amount) >= parseFloat(req.session.outstandingBalance)) {
-        await User.updateAmounts({ email: req.session.userEmail, principal: 0, balance: 0});
         req.session.totalLoanAmount = 0;
         req.session.outstandingBalance = 0;
     } else {
-        await User.updateAmounts({ email: req.session.userEmail, principal: user.totalLoanAmount, balance: user.outstandingBalance - amount});
         req.session.outstandingBalance = parseFloat(req.session.outstandingBalance) - parseFloat(amount);
     }
 
