@@ -71,6 +71,9 @@
         </form>
     </div>
 
+    <!-- Place for error message -->
+    <div id="errorMessage" style="color: red;"></div>
+    
     <script>
         // Load username, wallet address, and loan information
         window.onload = async function() {
@@ -104,6 +107,7 @@
 
         // Handle submission of borrowing data
         const borrowForm = document.getElementById('borrowForm');
+        const errorMessage = document.getElementById('errorMessage');
 
         borrowForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -128,13 +132,12 @@
                 window.location.reload();
             } else if (responseData.error) {
                 // Handle error, like showing an error message to the user
-                console.log("Error!")
+                errorMessage.textContent =responseData.error;
             }  
         });
 
         // Handle submission of repayment data
         const repaymentForm = document.getElementById('repaymentForm');
-
         repaymentForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
@@ -158,7 +161,7 @@
                 window.location.reload();
             } else if (responseData.error) {
                 // Handle error, like showing an error message to the user
-                console.log("Error!")
+                errorMessage.textContent =responseData.error;
             }  
         });
 

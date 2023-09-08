@@ -18,7 +18,12 @@ const getDB = () => {
         console.error("You must connect to the database first.");
         process.exit(1);
     }
-    return client.db('loan-tracker');
+    try {
+        return client.db('loan-tracker');
+    } catch (err) {
+        console.error("Database loan-tracker does not exist.");
+        process.exit(1);     
+    }
 };
 
 module.exports = {

@@ -1,4 +1,5 @@
 const { Web3 } = require('web3');
+const CustomError = require('../utils/customError');
 const loanContractJSON = require('../../../build/contracts/LoanNFT.json');
 
 const web3Provider = process.env.WEB3_PROVIDER;
@@ -15,22 +16,25 @@ const loanNFTContract = new web3.eth.Contract(loanContractABI, loanContractAddre
 
 // Function to create an Ethereum address when the user registers
 const createEthereumAddress = () => {
-    const account = web3.eth.accounts.create();
-    return {
-        address: account.address,
-        privateKey: account.privateKey
-    };
+    try {
+        const account = web3.eth.accounts.create();
+        return {
+            address: account.address,
+            privateKey: account.privateKey
+        };
+    } catch (err) {
+        console.error("Failed to create Ethereum wallet for the user.", err);
+        process.exit(1); 
+    }
 };
 
 // Function to find a borrower's current loan
 const fetchCurrentLoanId = async (borrowerAddress) => {
     try {
-        console.log("Fetching current loan ID for " + borrowerAddress)
         let loanId = await loanNFTContract.methods.outstandingBorrowerLoans(borrowerAddress).call();
-        console.log(loanId + " found.");
         return loanId;
-    } catch (error) {
-        console.error('Error fetching value:', error);
+    } catch (err) {
+        throw new CustomError('Error fetching loan ID: ' + err, 500);
     }
 };
 
@@ -39,49 +43,61 @@ const getLoanDetails = async (loanId) => {
     try {
         let details = await loanNFTContract.methods.getLoanDetails(loanId).call();
         return details;
-    } catch (error) {
-        console.error('Error fetching value:', error);
+    } catch (err) {
+        throw new CustomError('Error fetching loan details: ' + err, 500);
     }
 };
 
 const getLoanDetailsByBorrower = async (borrowerAddress) => {
-    const loanId = await fetchCurrentLoanId(borrowerAddress);
-    const details = await getLoanDetails(loanId);
-    return details;
+    try {
+        const loanId = await fetchCurrentLoanId(borrowerAddress);
+        const details = await getLoanDetails(loanId);
+        return details;
+    } catch (err) {
+        throw new CustomError('Error fetching borrower loan details: ' + err, 500);  
+    }
 }
 
 // Function to mint a loan
 const mintNFTLoan = async (borrowerAddress, amount) => {
-    const mintLoanEstimatedGas = await loanNFTContract.methods.mintLoan(borrowerAddress, amount).estimateGas({
-        from: ownerAccount
-    });
-    const mintTx = {
-        from: ownerAccount,
-        to: loanContractAddress,
-        data: loanNFTContract.methods.mintLoan(borrowerAddress, amount).encodeABI(),
-        gas: mintLoanEstimatedGas,
-        gasPrice: web3.utils.toWei('10', 'gwei')
-    };
-    const signedTx = await web3.eth.accounts.signTransaction(mintTx, ownerPrivateKey);
-    const txReceipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-    return txReceipt;
-};
+    try {
+        const mintLoanEstimatedGas = await loanNFTContract.methods.mintLoan(borrowerAddress, amount).estimateGas({
+            from: ownerAccount
+        });
+        const mintTx = {
+            from: ownerAccount,
+            to: loanContractAddress,
+            data: loanNFTContract.methods.mintLoan(borrowerAddress, amount).encodeABI(),
+            gas: mintLoanEstimatedGas,
+            gasPrice: web3.utils.toWei('10', 'gwei')
+        };
+        const signedTx = await web3.eth.accounts.signTransaction(mintTx, ownerPrivateKey);
+        const txReceipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        return txReceipt;
+    } catch (err) {
+        throw new CustomError("Failed to mint loan NFT.", 500);
+    }
+ };
 
 // Function to record repaymens on the loan NFT
 const repayNFTLoan = async (borrowerAddress, amount) => {
-    const repayLoanEstimatedGas = await loanNFTContract.methods.repayByBorrower(borrowerAddress, amount).estimateGas({
-        from: ownerAccount
-    });
-    const repayTx = {
-        from: ownerAccount,
-        to: loanContractAddress,
-        data: loanNFTContract.methods.repayByBorrower(borrowerAddress, amount).encodeABI(),
-        gas: repayLoanEstimatedGas,
-        gasPrice: web3.utils.toWei('10', 'gwei')
-    };
-    const signedRepayTx = await web3.eth.accounts.signTransaction(repayTx, ownerPrivateKey);
-    const repayTxReceipt = await web3.eth.sendSignedTransaction(signedRepayTx.rawTransaction);
-    return repayTxReceipt;
+    try {
+        const repayLoanEstimatedGas = await loanNFTContract.methods.repayByBorrower(borrowerAddress, amount).estimateGas({
+            from: ownerAccount
+        });
+        const repayTx = {
+            from: ownerAccount,
+            to: loanContractAddress,
+            data: loanNFTContract.methods.repayByBorrower(borrowerAddress, amount).encodeABI(),
+            gas: repayLoanEstimatedGas,
+            gasPrice: web3.utils.toWei('10', 'gwei')
+        };
+        const signedRepayTx = await web3.eth.accounts.signTransaction(repayTx, ownerPrivateKey);
+        const repayTxReceipt = await web3.eth.sendSignedTransaction(signedRepayTx.rawTransaction);
+        return repayTxReceipt;
+    } catch (err) {
+        throw new CustomError("Failed to update loan NFT with payment.", 500);
+    }
 };
 
 module.exports = {

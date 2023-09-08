@@ -62,7 +62,7 @@
             window.location.href = "/account";
         } else if (responseData.error) {
             // Handle error, like showing an error message to the user
-            errorMessage.textContent = "Username and password do not exist!";
+            errorMessage.textContent =responseData.error;
         }   
     });
 </script>

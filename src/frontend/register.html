@@ -62,7 +62,7 @@
             window.location.href = "/account";
         } else if (responseData.error) {
             // Handle error, like showing an error message to the user
-            errorMessage.textContent = "Account already exists! Try logging in instead." ; 
+            errorMessage.textContent = responseData.error; 
         }   
     });
 </script>
