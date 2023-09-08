@@ -1,16 +1,16 @@
 const { Web3 } = require('web3');
 const loanContractJSON = require('../../../build/contracts/LoanNFT.json');
 
-// Initialize web3. If you're connecting to a remote node, replace the provider.
-const web3 = new Web3('http://localhost:8545');
+const web3Provider = process.env.WEB3_PROVIDER;
+const ownerAccount = process.env.ETHEREUM_OWNER_ACCOUNT;
+const ownerPrivateKey = Buffer.from(process.env.ETHEREUM_OWNER_PRIVATE_KEY, 'hex');
+const loanContractAddress = process.env.LOAN_CONTRACT_ADDRESS;
 
-// Initialize the web app's address. This will own the contract.
-const ownerAccount = '0x0e90f67Cc36cf8b48a6b477F72154A69C620057F'; // The Ethereum account you're using
-const ownerPrivateKey = Buffer.from('78572acd7cfe824f0ba2f340becd55430fd5ef5586134aa26da85bc4d948ae7d', 'hex'); // Private key for the account (KEEP THIS SAFE!)
+// Initialize web3. If you're connecting to a remote node, replace the provider.
+const web3 = new Web3(web3Provider);
 
 // Read in my loan contract
 const loanContractABI = loanContractJSON.abi;
-const loanContractAddress = '0x48c5CCeCdA283377aC170CdD8F73d4d13Ed68fDa';
 const loanNFTContract = new web3.eth.Contract(loanContractABI, loanContractAddress);
 
 // Function to create an Ethereum address when the user registers
