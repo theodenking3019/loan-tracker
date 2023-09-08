@@ -34,10 +34,7 @@ const mintNFTLoan = async (borrowerAddress, amount) => {
         gas: mintLoanEstimatedGas,
         gasPrice: web3.utils.toWei('10', 'gwei')
     };
-    console.log("signing tx");
     const signedTx = await web3.eth.accounts.signTransaction(mintTx, ownerPrivateKey);
-    console.log("sending tx");
-    console.log(signedTx);
     const txReceipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
     return txReceipt;
 };

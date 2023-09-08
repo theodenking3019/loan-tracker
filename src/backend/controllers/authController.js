@@ -27,7 +27,6 @@ exports.getAccount = async (req, res) => {
 };
 
 exports.getAccountData = async (req, res) => {
-    console.log("Received request for /account-data");
     if (!req.session.userEmail) {
       return res.status(401).json({ error: 'Not authorized' });
     }
@@ -73,5 +72,3 @@ exports.postRegister = async (req, res) => {
     });
     res.json({ success: true });
 };
-
-//... other auth related controllers can be added here, e.g. login, logout

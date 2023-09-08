@@ -7,8 +7,6 @@ exports.postBorrow = async (req, res) => {
 
     // Fetch the user
     const user = await User.findByEmail(req.session.userEmail);
-    console.log("Found user "+ user.userEmail)
-
     if (!user) {
         return res.status(404).json({ error: 'User not found' });
     }
@@ -16,20 +14,18 @@ exports.postBorrow = async (req, res) => {
     // Note: add error handling here to revert in case one operation fails. 
     // Requires updating the smart contract as well to include burn functionality for the NFT.
     const txReceipt = await mintNFTLoan(user.ethereumAddress, amount);
+    console.log(`Transaction hash: ${txReceipt.transactionHash}`);
 
     await User.updateAmounts({ email: req.session.userEmail, principal: amount, balance: amount});
 
     req.session.totalLoanAmount = amount;
     req.session.outstandingBalance = amount;
 
-    console.log('saved')
-
     res.json({ success: true });
 };
 
 exports.postRepay = async (req, res) => {
     const { amount } = req.body;
-    console.log('Received repayment request for ' + amount);
 
     // Fetch the user
     const user = await User.findByEmail(req.session.userEmail);
