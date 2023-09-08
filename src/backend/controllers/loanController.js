@@ -1,5 +1,5 @@
 const { User } = require('../models/user');
-const { mintNFTLoan, repayNFTLoan } = require('../ethereum/web3');
+const { mintNFTLoan, repayNFTLoan } = require('../utils/ethereum');
 
 
 exports.postBorrow = async (req, res) => {

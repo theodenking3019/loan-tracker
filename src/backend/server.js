@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const { connectDB } = require('./models/user');
+const { connectDB } = require('./utils/database');
 const authRoutes = require('./routes/authRoutes');
 const loanRoutes = require('./routes/loanRoutes');
 const sessionMiddleware = require('./middleware/session');

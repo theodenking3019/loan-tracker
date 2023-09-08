@@ -1,8 +1,8 @@
 // models/user.js
 const bcrypt = require('bcrypt');
-const { connectDB, getDB } = require('../utils/database.js');
-const { encrypt } = require('../utils/encryption.js');
-const { createEthereumAddress } = require('../ethereum/web3');
+const { getDB } = require('../utils/database');
+const { encrypt } = require('../utils/encryption');
+const { createEthereumAddress } = require('../utils/ethereum');
 
 const User = {
     async create(data) {
