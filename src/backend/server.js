@@ -17,6 +17,9 @@ app.use(sessionMiddleware);
 app.use(authRoutes); // Order matters here because routes use session
 app.use(loanRoutes);
 app.use(requestLogger);
+app.use((req, res, next) => {
+  res.status(404).sendFile(path.join(__dirname, '../frontend/404.html'));
+});
 app.use(errorHandler);
 
 connectDB().then(() => {
@@ -24,3 +27,4 @@ connectDB().then(() => {
       console.log(`Server is running on port ${PORT}`);
     });
   });
+
