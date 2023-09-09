@@ -6,14 +6,14 @@
     <title>Register to Test Lending Portal</title>
     <link rel="stylesheet" href="styles/styles.css">
 </head>
-<body>
+<body id="registrationPage">
 
 <h1>Sign up to get access to capital</h1>
 
 <form id="registrationForm" action="/register" method="post">
     <div>
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" name="email" required autofocus>
     </div>
     
     <div>
@@ -21,13 +21,13 @@
         <input type="password" id="password" name="password" required>
     </div>
     
-    <div>
+    <div class="btn-container">
         <button type="submit">Register</button>
     </div>
 </form>
 
 <!-- Place for error message -->
-<div id="errorMessage" style="color: red;"></div>
+<div id="errorMessage"></div>
 
 <!-- Link to the registration page -->
 <p>Already registered? <a href="/login">Click here to log in.</a></p>

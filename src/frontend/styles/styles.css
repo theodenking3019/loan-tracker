@@ -31,7 +31,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Registration form styling */
+/* Form styling */
 form {
     background-color: #fff;
     padding: 2rem;
@@ -39,6 +39,7 @@ form {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
+    margin-top: 10px; /* Giving space below the header */
 }
 
 form div {
@@ -82,3 +83,54 @@ button:hover {
     background-color: #0055a5;
 }
 
+.btn-container {
+    text-align: center;
+}
+
+
+/* Error message styling */
+#errorMessage {
+    color: red;
+    margin-top: 10px;
+}
+
+/* Account page-specific styling*/
+.account-page {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f4f5f7;
+}
+
+#header {
+    width: 100%;
+    max-width: 1300px; /* Or whatever maximum width you prefer */
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    position: relative; /* So it doesn't overlap with forms */
+}
+
+#logoutBtn {
+    order: 2; /* Push to the end/right */
+    text-align: right; 
+}
+
+#userInfo {
+    order: 1; /* Keep to the start/left */
+}
+
+#repaymentFormContainer, #borrowFormContainer {
+    text-align: center;
+    margin-top: 100px;
+    font-size: large;
+    width: 100%;
+    max-width: 400px; /* Or whatever width you prefer */
+    margin: auto 0;
+}
+
+#repaymentFormContainer {
+    display: none;
+}

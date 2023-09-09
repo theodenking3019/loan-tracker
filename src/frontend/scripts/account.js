@@ -17,10 +17,13 @@
                     document.getElementById('repaymentFormContainer').style.display = 'block';  // Show the repayment form
                     document.getElementById('outstandingBalance').textContent = principal; // Display the outstanding balance
                     document.getElementById('totalLoanAmount').textContent = outstanding; // Display the outstanding balance
+                    document.getElementById('repaymentAmount').focus();
                 }
                 else {
                     document.getElementById('borrowFormContainer').style.display = 'block';   // Hide the borrow form
                     document.getElementById('repaymentFormContainer').style.display = 'none';  // Show the repayment form
+                    document.getElementById('amount').focus();
+
                 }
             } catch (error) {
                 console.error(error);
