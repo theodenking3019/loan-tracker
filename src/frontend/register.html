@@ -33,39 +33,8 @@
 <p>Already registered? <a href="/login">Click here to log in.</a></p>
 
 <!-- JavaScript to intercept the urlencoded form and convert to JSON so it can be parsed  -->
-<script>
-    const form = document.getElementById('registrationForm');
-    const errorMessage = document.getElementById('errorMessage');
-
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const email = form.email.value;
-        const password = form.password.value;
-
-        const response = await fetch(form.action, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email,
-                password
-            })
-        });
-
-        const responseData = await response.json();
-
-        // Handle response here (show success message, redirect, etc.)
-        if (responseData.success) {
-        // Redirect to the home page
-            window.location.href = "/account";
-        } else if (responseData.error) {
-            // Handle error, like showing an error message to the user
-            errorMessage.textContent = responseData.error; 
-        }   
-    });
-</script>
+<script src="scripts/utils.js" defer></script>
+<script src="scripts/register.js" defer></script>
 
 </body>
 </html>
