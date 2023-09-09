@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const CustomError = require('../utils/customError');
 const { getDB } = require('../utils/database');
 const { encrypt } = require('../utils/encryption');
