@@ -1,5 +1,9 @@
 const { User } = require('../models/user');
-const { getLoanDetailsByBorrower, mintNFTLoan, repayNFTLoan } = require('../utils/ethereum');
+const {
+    getLoanDetailsByBorrower,
+    mintNFTLoan,
+    repayNFTLoan
+} = require('../utils/ethereum');
 
 exports.postBorrow = async (req, res) => {
     try {
@@ -14,17 +18,20 @@ exports.postBorrow = async (req, res) => {
         const txReceipt = await mintNFTLoan(user.ethereumAddress, amount);
         console.log(`Transaction hash: ${txReceipt.transactionHash}`);
 
-        const loanDetails = await getLoanDetailsByBorrower(user.ethereumAddress)
+        const loanDetails = await getLoanDetailsByBorrower(
+            user.ethereumAddress
+        );
 
         req.session.totalLoanAmount = loanDetails.amount.toString();
-        req.session.outstandingBalance = loanDetails.outstandingBalance.toString();
+        req.session.outstandingBalance =
+            loanDetails.outstandingBalance.toString();
 
         res.json({ success: true });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Failed to borrow funds." });
+        res.status(500).json({ error: 'Failed to borrow funds.' });
     }
-}; 
+};
 
 exports.postRepay = async (req, res) => {
     try {
@@ -44,12 +51,13 @@ exports.postRepay = async (req, res) => {
             req.session.totalLoanAmount = 0;
             req.session.outstandingBalance = 0;
         } else {
-            req.session.outstandingBalance = parseFloat(req.session.outstandingBalance) - parseFloat(amount);
+            req.session.outstandingBalance =
+                parseFloat(req.session.outstandingBalance) - parseFloat(amount);
         }
 
         res.json({ success: true });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Error processing repayment." });
+        res.status(500).json({ error: 'Error processing repayment.' });
     }
 };

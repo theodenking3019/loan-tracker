@@ -6,7 +6,7 @@ const { createEthereumAddress } = require('../utils/ethereum');
 
 const User = {
     async create(data) {
-        try { 
+        try {
             const db = getDB();
             data.password = await bcrypt.hash(data.password, 10);
             // Generating an Ethereum address and private key
@@ -16,16 +16,16 @@ const User = {
 
             return await db.collection('users').insertOne(data);
         } catch (err) {
-            throw new CustomError("Failed to create user.", 500);
+            throw new CustomError('Failed to create user.', 500);
         }
     },
-    
+
     async findByEmail(email) {
         try {
             const db = getDB();
             return await db.collection('users').findOne({ email });
         } catch (err) {
-            throw new CustomError("Failed to fetch user.", 500);
+            throw new CustomError('Failed to fetch user.', 500);
         }
     }
 };

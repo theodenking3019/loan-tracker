@@ -19,7 +19,7 @@ function handleFormSubmit(formId, getFormData, onSuccess, onError) {
     const form = document.getElementById(formId);
     const errorMessage = document.getElementById('errorMessage');
 
-    form.addEventListener('submit', async (event) => {
+    form.addEventListener('submit', async event => {
         event.preventDefault();
         try {
             const data = getFormData(form);
@@ -34,6 +34,4 @@ function handleFormSubmit(formId, getFormData, onSuccess, onError) {
             onError({ error: 'Failed to submit form' });
         }
     });
-
-    
 }

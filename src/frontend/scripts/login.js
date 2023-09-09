@@ -1,9 +1,9 @@
 handleFormSubmit(
     'loginForm',
-    (form) => ({
+    form => ({
         email: form.email.value,
         password: form.password.value
     }),
-    () => window.location.href = "/account",
-    (response) => errorMessage.textContent = response.error
+    () => (window.location.href = '/account'),
+    response => (errorMessage.textContent = response.error)
 );

@@ -1,40 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Théoden's Lending Portal</title>
-    <link rel="stylesheet" href="styles/styles.css">
-</head>
-<body id="loginPage">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Théoden's Lending Portal</title>
+        <link rel="stylesheet" href="styles/styles.css" />
+    </head>
+    <body id="loginPage">
+        <h1>Log in to view your account</h1>
 
-<h1>Log in to view your account</h1>
+        <form id="loginForm" action="/login" method="post">
+            <div>
+                <label for="email">Email:</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    autofocus
+                />
+            </div>
 
-<form id="loginForm" action="/login" method="post">
-    <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required autofocus>
-    </div>
-    
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-    </div>
-    
-    <div class="btn-container">
-        <button type="submit">Login</button>
-    </div>
-</form>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required />
+            </div>
 
-<!-- Place for error message -->
-<div id="errorMessage"></div>
+            <div class="btn-container">
+                <button type="submit">Login</button>
+            </div>
+        </form>
 
-<!-- Link to the registration page -->
-<p>No account? <a href="/register">Click here to sign up.</a></p>
+        <!-- Place for error message -->
+        <div id="errorMessage"></div>
 
-<!-- JavaScript to intercept the urlencoded form and convert to JSON so it can be parsed  -->
-<script src="scripts/utils.js" defer></script>
-<script src="scripts/login.js" defer></script>
+        <!-- Link to the registration page -->
+        <p>No account? <a href="/register">Click here to sign up.</a></p>
 
-</body>
+        <!-- JavaScript to intercept the urlencoded form and convert to JSON so it can be parsed  -->
+        <script src="scripts/utils.js" defer></script>
+        <script src="scripts/login.js" defer></script>
+    </body>
 </html>

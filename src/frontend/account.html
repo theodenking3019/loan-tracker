@@ -1,62 +1,78 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Théoden's Lending Portal</title>
+        <link rel="stylesheet" href="styles/styles.css" />
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Théoden's Lending Portal</title>
-    <link rel="stylesheet" href="styles/styles.css">
-</head>
+    <body class="account-page">
+        <header id="header">
+            <!-- Logout button -->
+            <div id="logoutBtn">
+                <button onclick="location.href='/logout'">Logout</button>
+            </div>
+            <!-- User Info -->
+            <div id="userInfo">
+                <p>Email: <span id="userEmail"></span></p>
+                <p>Ethereum Address: <span id="userEthAddress"></span></p>
+            </div>
+        </header>
 
-<body class="account-page">
-    <header id="header">
-        <!-- Logout button -->
-        <div id="logoutBtn">
-            <button onclick="location.href='/logout'">Logout</button>
+        <!-- Loan Amount Input -->
+        <div id="borrowFormContainer">
+            <h2>Request a Loan</h2>
+            <form id="borrowForm" action="/borrow" method="post">
+                <div>
+                    <label for="amount"
+                        >Enter your desired loan amount in USD:
+                    </label>
+                    <input
+                        type="number"
+                        id="amount"
+                        name="amount"
+                        min="1"
+                        max="10000"
+                        required
+                    />
+                </div>
+                <div>
+                    <button type="submit">Request Loan</button>
+                </div>
+            </form>
         </div>
-        <!-- User Info -->
-        <div id="userInfo">
-            <p>Email: <span id="userEmail"></span></p>
-            <p>Ethereum Address: <span id="userEthAddress"></span></p>
+
+        <!-- Repayment Form - initially hidden -->
+        <div id="repaymentFormContainer">
+            <h2>Repayment</h2>
+            <p>Your principal amount: $<span id="totalLoanAmount"></span></p>
+            <p>
+                Your outstanding balance: $<span id="outstandingBalance"></span>
+            </p>
+            <form id="repaymentForm" action="/repay" method="post">
+                <div>
+                    <label for="repaymentAmount"
+                        >Enter repayment amount in USD:
+                    </label>
+                    <input
+                        type="number"
+                        id="repaymentAmount"
+                        name="repaymentAmount"
+                        min="1"
+                        required
+                    />
+                </div>
+                <div>
+                    <button type="submit">Submit Payment</button>
+                </div>
+            </form>
         </div>
-    </header>
 
-    <!-- Loan Amount Input -->
-    <div id="borrowFormContainer">
-        <h2>Request a Loan</h2>
-        <form id="borrowForm" action="/borrow" method="post">
-            <div>
-                <label for="amount">Enter your desired loan amount in USD: </label>
-                <input type="number" id="amount" name="amount" min="1" max="10000" required>
-            </div>
-            <div>
-                <button type="submit">Request Loan</button>
-            </div>
-        </form>
-    </div>
-    
-    <!-- Repayment Form - initially hidden -->
-    <div id="repaymentFormContainer">
-        <h2>Repayment</h2>
-        <p>Your principal amount: $<span id="totalLoanAmount"></span></p>
-        <p>Your outstanding balance: $<span id="outstandingBalance"></span></p>
-        <form id="repaymentForm" action="/repay" method="post">
-            <div>
-                <label for="repaymentAmount">Enter repayment amount in USD: </label>
-                <input type="number" id="repaymentAmount" name="repaymentAmount" min="1" required>
-            </div>
-            <div>
-                <button type="submit">Submit Payment</button>
-            </div>
-        </form>
-    </div>
+        <!-- Place for error message -->
+        <div id="errorMessage"></div>
 
-    <!-- Place for error message -->
-    <div id="errorMessage"></div>
-
-    <script src="scripts/utils.js" defer></script>
-    <script src="scripts/account.js" defer></script>
-
-</body>
-
+        <script src="scripts/utils.js" defer></script>
+        <script src="scripts/account.js" defer></script>
+    </body>
 </html>

@@ -1,40 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Théoden's Lending Portal</title>
-    <link rel="stylesheet" href="styles/styles.css">
-</head>
-<body id="registrationPage">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Théoden's Lending Portal</title>
+        <link rel="stylesheet" href="styles/styles.css" />
+    </head>
+    <body id="registrationPage">
+        <h1>Sign up to get access to capital</h1>
 
-<h1>Sign up to get access to capital</h1>
+        <form id="registrationForm" action="/register" method="post">
+            <div>
+                <label for="email">Email:</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    autofocus
+                />
+            </div>
 
-<form id="registrationForm" action="/register" method="post">
-    <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required autofocus>
-    </div>
-    
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-    </div>
-    
-    <div class="btn-container">
-        <button type="submit">Register</button>
-    </div>
-</form>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required />
+            </div>
 
-<!-- Place for error message -->
-<div id="errorMessage"></div>
+            <div class="btn-container">
+                <button type="submit">Register</button>
+            </div>
+        </form>
 
-<!-- Link to the registration page -->
-<p>Already registered? <a href="/login">Click here to log in.</a></p>
+        <!-- Place for error message -->
+        <div id="errorMessage"></div>
 
-<!-- JavaScript to intercept the urlencoded form and convert to JSON so it can be parsed  -->
-<script src="scripts/utils.js" defer></script>
-<script src="scripts/register.js" defer></script>
+        <!-- Link to the registration page -->
+        <p>Already registered? <a href="/login">Click here to log in.</a></p>
 
-</body>
+        <!-- JavaScript to intercept the urlencoded form and convert to JSON so it can be parsed  -->
+        <script src="scripts/utils.js" defer></script>
+        <script src="scripts/register.js" defer></script>
+    </body>
 </html>

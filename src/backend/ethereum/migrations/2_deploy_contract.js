@@ -1,5 +1,5 @@
-const LoanNFT = artifacts.require("LoanNFT");
+const LoanNFT = artifacts.require('LoanNFT');
 
-module.exports = function(deployer) {
-  deployer.deploy(LoanNFT);
+module.exports = function (deployer) {
+    deployer.deploy(LoanNFT);
 };
