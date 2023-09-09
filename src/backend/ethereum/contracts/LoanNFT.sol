@@ -4,7 +4,6 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "hardhat/console.sol";
 
 contract LoanNFT is ERC721Enumerable, Ownable {
     using Counters for Counters.Counter;
@@ -33,7 +32,6 @@ contract LoanNFT is ERC721Enumerable, Ownable {
     }
 
     function mintLoan(address borrowerAddress, uint16 amount) public onlyOwner returns (uint256) {
-        console.log("attempting to mint loan");
         require(amount > 0, "Amount should be greater than 0");
         require(amount <= maxLoanAmount, "Loan amount exceeds max loan amount.");
         require(!borrowerHasLoan(borrowerAddress), "Borrower already has an outstanding loan!");
@@ -80,19 +78,19 @@ contract LoanNFT is ERC721Enumerable, Ownable {
         return loans[tokenId];
     }
 
-    function transferFrom(address, address, uint256) public override {
+    function transferFrom(address, address, uint256) public override(ERC721, IERC721) {
         revert("This NFT is non-transferrable");
     }
 
-    function safeTransferFrom(address, address, uint256) public override {
+    function safeTransferFrom(address, address, uint256) public override(ERC721, IERC721) {
         revert("This NFT is non-transferrable");
     }
 
-    function approve(address, uint256) public override {
+    function approve(address, uint256) public override(ERC721, IERC721) {
         revert("This NFT is non-transferrable");
     }
 
-    function setApprovalForAll(address, bool) public override {
+    function setApprovalForAll(address, bool) public override(ERC721, IERC721) {
         revert("This NFT is non-transferrable");
     }
 
